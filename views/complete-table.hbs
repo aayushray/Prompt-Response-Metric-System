@@ -1,0 +1,88 @@
+<!-- views/table-view.hbs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Table</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+    <div class="container-fluid mt-5">
+        <h1 class="mb-4 text-center">Complete Table</h1>
+
+        <form action="/openai/complete-table" method="get" class="mb-4">
+            <div class="form-row justify-content-center">
+                <div class="col-md-3">
+                    <label for="filterProperty">Filter by Property:</label>
+                    <select id="filterProperty" name="property" class="form-control">
+                        <option value="status">Status</option>
+                        <option value="model">Model</option>
+                        <option value="total_token">Total Token</option>
+                        <option value="completion_token">Completion Token</option>
+                        <option value="prompt_token">Prompt Token</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="filterValue">Filter Value:</label>
+                    <input type="text" id="filterValue" name="value" class="form-control">
+                </div>
+
+                <div class="col-md-2">
+                    <label for="startDate">Start Date:</label>
+                    <input type="date" id="startDate" name="startDate" class="form-control">
+                </div>
+
+                <div class="col-md-2">
+                    <label for="endDate">End Date:</label>
+                    <input type="date" id="endDate" name="endDate" class="form-control">
+                </div>
+
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary mt-4">Apply Filter</button>
+                </div>
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Date Created</th>
+                        <th>Status</th>
+                        <th>Request</th>
+                        <th>Response</th>
+                        <th>Model</th>
+                        <th>Total Tokens</th>
+                        <th>Completion Tokens</th>
+                        <th>Prompt Tokens</th>
+                        <th>Latency</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each data}}
+                        <tr>
+                            <td>{{ this.date_created }}</td>
+                            <td>{{ this.status }}</td>
+                            <td>{{ this.request }}</td>
+                            <td>{{ this.response }}</td>
+                            <td>{{ this.model }}</td>
+                            <td>{{ this.total_token }}</td>
+                            <td>{{ this.completion_token }}</td>
+                            <td>{{ this.prompt_token }}</td>
+                            <td>{{ this.latency }} ms</td>
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Include Bootstrap JS and Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>
