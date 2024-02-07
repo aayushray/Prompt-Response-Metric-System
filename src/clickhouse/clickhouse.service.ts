@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ClickHouse } from 'clickhouse';
-// import { ClickHouseRegistry } from 'tr-nestjs-clickhouse';
-import { createClient } from '@clickhouse/client';
+import { createClient, BaseResultSet } from '@clickhouse/client';
+import { Readable } from 'stream';
 require('dotenv').config();
 
 const client = createClient({
@@ -52,7 +52,7 @@ export class ClickHouseService {
         let query = 'SELECT * FROM prompt_response_system WHERE 1';
     
         if (filters.startDate && filters.endDate) {
-            query += ` AND date_created >= '${filters.startDate}' AND date_created <= '${filters.endDate}'`;
+            query += ` AND date_created >= '${filters.startDate}' AND date_created <= DATE_ADD('${filters.endDate}', INTERVAL 1 DAY)`;
         }
     
         if (filters.property && filters.value) {
@@ -69,5 +69,29 @@ export class ClickHouseService {
         });
     
         return await result.json();
+    }
+
+    async fetchMetrics(): Promise<any> {
+        const inputTokenPerSeconds = await client.query({
+            query: `SELECT date_created as Date, (total_token*1000)/latency as inputTokenPerSeconds FROM prompt_response_system ORDER BY date_created ASC`,
+            format: 'JSONEachRow'
+        });
+
+        const successVsFailure = await client.query({
+            query: `SELECT COUNT(*) as Total, SUM(status) as Success, SUM(1-status) as Failure FROM prompt_response_system`,
+            format: 'JSONEachRow'
+        });
+
+        const requestsPerDay = await client.query({
+            query: `SELECT DATE(date_created) AS Date, COUNT(*) AS Count FROM prompt_response_system GROUP BY Date ORDER BY Date`,
+            format: 'JSONEachRow'
+        }); 
+        const data = {
+            inputTokenPerSeconds: await inputTokenPerSeconds.json(),
+            successVsFailure: await successVsFailure.json(),
+            requestsPerDay: await requestsPerDay.json(),
+        };
+
+        return data;
     }
 }

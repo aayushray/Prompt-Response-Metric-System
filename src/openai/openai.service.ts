@@ -87,4 +87,8 @@ export class OpenaiService {
     async getFilterData(filters: any): Promise<any[]> {
       return this.clickHouseService.getFilteredData(filters);
     }
+
+    async getMetrics(): Promise<any> {
+      return this.clickHouseService.fetchMetrics();
+    }
 }

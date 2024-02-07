@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Metrics</title>
+  <!-- Include Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="d-flex flex-column min-vh-100 justify-content-center align-items-center">
+  <div class="container text-center">
+    <!-- Heading for Input Tokens Per Second Graph -->
+    <br>
+    <br>
+    
+    <h1 class="mb-4">Input Tokens Per Second Graph</h1>
+    <canvas id="inputTokensChart"></canvas>
+
+    <br>
+    <br>
+    <br>
+
+    <!-- Heading for Requests Per Day Bar Chart -->
+    <h2 class="mt-5">Requests Per Day</h2>
+    <canvas id="requestsPerDayChart"></canvas>
+
+    <br>
+    <br>
+    <br>
+
+    <!-- Heading for Success vs Failure Pie Chart -->
+    <h2 class="mt-5">Success vs Failure</h2>
+    <canvas id="successVsFailureChart" width="400" height="400"></canvas>
+  </div>
+
+  <!-- Include Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Extract data from the server response
+    const data = {{{data}}};
+
+    // Extract data for success vs failure chart
+    const successVsFailureData = data.successVsFailure[0];
+
+    // Extract data for requests per day chart
+    let requestsPerDayData = data.requestsPerDay;
+
+    // Ensure at least 6 data points are available
+    while (requestsPerDayData.length < 6) {
+      requestsPerDayData.push({ Date: '', Count: null });
+    }
+
+    // Extracting dates and inputTokenPerSeconds from the data
+    const inputTokenPerSecondsData = data.inputTokenPerSeconds;
+
+    // Get the canvas elements
+    const ctxInputTokens = document.getElementById('inputTokensChart').getContext('2d');
+    const ctxRequestsPerDay = document.getElementById('requestsPerDayChart').getContext('2d');
+    const ctxSuccessVsFailure = document.getElementById('successVsFailureChart').getContext('2d');
+
+    // Create the input tokens chart
+    const inputTokensChart = new Chart(ctxInputTokens, {
+      type: 'line',
+      data: {
+        labels: inputTokenPerSecondsData.map(entry => entry.Date),
+        datasets: [{
+          label: 'Input Tokens Per Second',
+          data: inputTokenPerSecondsData.map(entry => entry.inputTokenPerSeconds),
+          borderColor: 'blue',
+          backgroundColor: 'transparent',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          xAxes: [{
+            type: 'time',
+            time: {
+              unit: 'hour', 
+              displayFormats: {
+                hour: 'YYYY-MM-DD HH:mm:ss' 
+              }
+            },
+            scaleLabel: {
+              display: true,
+              labelString: 'Date'
+            }
+          }],
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: 'Input Tokens Per Second'
+            }
+          }]
+        }
+      }
+    });
+
+    // Set the width and height of pie chart to match the input tokens chart
+    const inputTokensChartWidth = document.getElementById('inputTokensChart').width;
+    const inputTokensChartHeight = document.getElementById('inputTokensChart').height;
+    document.getElementById('successVsFailureChart').width = inputTokensChartWidth / 2;
+    document.getElementById('successVsFailureChart').height = inputTokensChartHeight / 2;
+
+    // Create the success vs failure chart
+    const successVsFailureChart = new Chart(ctxSuccessVsFailure, {
+      type: 'pie',
+      data: {
+        labels: ['Success', 'Failure'],
+        datasets: [{
+          data: [successVsFailureData.Success, successVsFailureData.Failure],
+          backgroundColor: ['green', 'red']
+        }]
+      },
+      options: {
+        responsive: true
+      }
+    });
+
+    // Create the requests per day chart
+    const requestsPerDayChart = new Chart(ctxRequestsPerDay, {
+      type: 'bar',
+      data: {
+        labels: requestsPerDayData.map(entry => entry.Date),
+        datasets: [{
+          label: 'Requests Per Day',
+          data: requestsPerDayData.map(entry => entry.Count),
+          backgroundColor: 'blue',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      }
+    });
+  </script>
+</body>
+</html>

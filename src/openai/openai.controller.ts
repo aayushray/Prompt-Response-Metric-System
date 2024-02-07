@@ -33,4 +33,11 @@ export class OpenaiController {
             return { data: completeTable };
         }
     }
+
+    @Get('metrics')
+    @Render('view-metrics')
+    async getMetrics(){
+        const metrics = await this.openaiService.getMetrics();
+        return { data: JSON.stringify(metrics) };
+    }
 }
