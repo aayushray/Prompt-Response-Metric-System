@@ -2,7 +2,6 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { ClickHouseService } from 'src/clickhouse/clickhouse.service';
 import { firstValueFrom } from 'rxjs';
-import { start } from 'repl';
 require('dotenv').config();
 
 @Injectable()

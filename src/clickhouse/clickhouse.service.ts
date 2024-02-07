@@ -1,12 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { ClickHouse } from 'clickhouse';
 import { createClient, BaseResultSet } from '@clickhouse/client';
-import { Readable } from 'stream';
 require('dotenv').config();
 
 const client = createClient({
     host: `https://cqzuj3ha6v.ap-southeast-1.aws.clickhouse.cloud:8443`,
-    password: process.env.PASSWORD
+    password: process.env.DATABASE_PASSWORD
 })
 
 @Injectable()

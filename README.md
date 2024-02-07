@@ -22,14 +22,24 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
 ## Installation
+1. Clone the repository
+```bash
+git clone https://github.com/aayushray/Prompt-Response-Metric-System
+```
+2. Install the dependencies
+```bash
+cd Prompt-Response-Metric-System  #Go to the project directory
+npm install
+```
+
+## Setting API Key
+
+Replace the api_key with your own api key in the openai.service.ts file
 
 ```bash
-$ npm install
+const apiKey = process.env.OPENAI_API_KEY; 
 ```
 
 ## Running the app
@@ -45,29 +55,10 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## Test
+## Endpoints
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+http://localhost:3000/openai/ask                - POST  - To ask query
+http://localhost:3000/openai/complete-table     - GET   - To view Dashboard consisting of all the query history
+http://localhost:3000/openai/metrics            - GET   - To view the metrics related to the query history
 ```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
